@@ -1,106 +1,75 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
 
-// Componente de botón reutilizable
-const Button = ({ onClick, color, children }) => {
+function Profile({user}) {  
+
     return (
-      <button
-        className={`bg-${color}-500 hover:bg-${color}-700 text-white font-bold py-2 px-4 rounded`}
-        onClick={onClick}
-      >
-        {children}
-      </button>
+      <>
+        <h1>{user.name}</h1>
+        <br />
+        <img
+          className="avatar"
+          src={user.imageUrl}
+          alt={'Photo of ' + user.name}
+          style={{
+            width: user.imageSize,
+            height: user.imageSize,
+            backgroundColor: 'black'
+          }}
+        />      
+      </>
     );
-  }
-  
-  // Componente de entrada de texto reutilizable
-  const Input = ({ onChange, onKeyUp }) => {
-    return (
-      <input
-        type="text"
-        className="border rounded py-2 px-4"
-        onChange={onChange}
-        onKeyUp={onKeyUp}
-      />
-    );
-  }
-  
-  function Profile({ users }) {
-    return (
-      <div className="flex flex-wrap justify-center">
-        {users.map((user, index) => (
-          <div key={index} className="bg-white rounded-lg p-4 shadow-md m-2">
-            <h1 className="text-xl font-bold mb-2">Hello {user.name}</h1>
-            <img
-              src={user.imageUrl}
-              alt={user.name}
-              className="profile-image rounded-full mx-auto"
-              height={90}
-              width={90}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  }
-  
-  export default function Example() {
-    const [count, setCount] = useState(0);
-  
+}
+
+export default function Example() {
+
     const saludar = () => {
-      alert("Hola");
-    };
+      alert("hola")
+    }
   
     const mostrarTexto = (e) => {
-      console.log(e.target.value);
-    };
+      console.log(e.target.value)
+    }
   
-    const handleKeyUp = () => {
-      console.log("Soltó una tecla");
-    };
+    const keyUp = () => {
+      console.log("Solo una tecla")
+    }
   
-    const handleIncrement = () => {
-      setCount(count + 1);
-    };
-  
-    const handleDecrement = () => {
-      setCount(count - 1);
-    };
+    /** Cambiando el estado de las variables */
+    const [count, setCount] = useState(0);
   
     const users = [{
       name: 'Elvis Presley',
       imageUrl: 'https://hips.hearstapps.com/hmg-prod/images/singer-elvis-presley-news-photo-1590531497.jpg',
       imageSize: 90,
-    },
+    }, 
     {
       name: 'Brad Pitt',
       imageUrl: 'https://goldenglobes.com/wp-content/uploads/2023/10/brad-pitt_03_paramount-pictures.jpg',
       imageSize: 90,
-    },
+    }, 
     {
       name: 'Madonna',
       imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVATslgVY87n3lp3XHUlxF8Edc6jubIVkmbg&usqp=CAU',
       imageSize: 90,
+    },
+    {
+      name: 'Zinedine Zidane',
+      imageUrl: 'https://publish-p47754-e237306.adobeaemcloud.com/adobe/dynamicmedia/deliver/dm-aid--c477d5d0-4f24-486c-9984-5f07beef79fd/_330186270595.app.png?preferwebp=true&width=312',
+      imageSize: 90,
     }];
   
     return (
-      <div className="App">
-        <Profile users={users} />
-        
-        {/* Botón para saludar */}
-        <Button onClick={saludar} color="blue">Enviar</Button>
-        
-        {/* Entrada de texto */}
-        <Input onChange={mostrarTexto} onKeyUp={handleKeyUp} />
-  
-        <br />
-  
-        {/* Botones de incremento y decremento */}
-        <Button onClick={handleIncrement} color="green">Sumar</Button>
-        <Button onClick={handleDecrement} color="red">Restar</Button>
-        
-        {/* Contador */}
-        <p className="text-xl">El contador va en {count}</p>
+      <div>
+        {users.map(user => (
+          <Profile key={user.name} user={user}/>
+        ))}
+        <br/>
+        <button onClick={() => saludar()}>Enviar</button>    
+        <input type="text" onChange={mostrarTexto} onKeyUp={keyUp} />  
+        <br/>
+        <button onClick={() => setCount(count+1)}>Sumar</button>
+        <button onClick={() => setCount(count-1)}>Restar</button>
+        <p> El contador va en: {count}</p>
       </div>
-    );
+    )
   }
