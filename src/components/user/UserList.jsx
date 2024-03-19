@@ -1,11 +1,15 @@
-import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useGetUsersQuery } from '../../features/api/apiSlice';
 
 export default function UserList(){
-    /** Obtiene el estado de una variable */
-    const users = useSelector(state => state.users)
-    console.log(users)
 
+    /** Obtiene el estado de una variable con Redux */
+    // const users = useSelector(state => state.users)
+    const { data: users, isLoading, isError, error } = useGetUsersQuery();
+    console.log(users)
+    if (isLoading) return <p>Cargando usuarios...</p>;
+    else if(isError) return (<div>Error: {error.message} </div>)
+    
     return (
         <div className="flex justify-center py-8 px-10">
         <table className="table-auto w-full">
