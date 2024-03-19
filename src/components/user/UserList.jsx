@@ -24,7 +24,7 @@ export default function UserList(){
                 </tr>
             </thead>
             <tbody className="bg-gray-200 ">
-                {users.map(user => (
+                {users?.map(user => (
                 <tr key={user._id}>
                     <td className="border-y-2 px-4 py-2 border-indigo-600">{user.name}</td>
                     <td className="border-y-2 px-4 py-2 border-indigo-600">{user.lastname}</td>

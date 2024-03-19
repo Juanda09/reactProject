@@ -5,7 +5,7 @@ import Footer from "./components/footer";
 import Header from "./components/header";
 import UserList from "./components/user/UserList";
 import UserForm from "./components/user/UserForm";
-import Login from "./components/auth/Login";
+import Login from "./components/Auth/login";
 
 function App() {
   return (
