@@ -188,7 +188,7 @@ export default function UserForm() {
                 <div className="flex justify-center">
                 <Button
     type="submit"
-    disabled={isCreating || isUpdating || (!id && !isValidForm)}
+    disabled={isCreating || isUpdating}
     variant="contained"
     color="primary"
     disableElevation

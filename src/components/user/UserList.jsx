@@ -9,9 +9,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Swal from 'sweetalert2'; // Importar SweetAlert2
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     container: {
-        marginBottom: '1rem',
+        marginBottom: theme.spacing(2),
+        textAlign: 'center',
     },
     table: {
         minWidth: 650,
@@ -22,34 +23,28 @@ const useStyles = makeStyles({
         fontWeight: 'bold',
     },
     cell: {
-        padding:'0.5rem',
+        padding: theme.spacing(1),
         fontSize: '1rem',
         fontWeight: 'bold',
         textAlign: 'center',
-        verticalAlign:'middle',
+        verticalAlign: 'middle',
         border: '1px solid #ddd',
         borderRadius: '5px',
         '&:hover': {
             backgroundColor: '#f5f5f5',
         },
-        '&:focus': {
-            backgroundColor: '#f5f5f5',
-        },
-        '&:active': {
-            backgroundColor: '#f5f5f5',
-        },
-        '&:visited': {
-            backgroundColor: '#f5f5f5',
-        },
     },
     avatar: {
-        width: '40px',
-        height: '40px',
+        width: theme.spacing(7),
+        height: theme.spacing(7),
+        borderRadius: '50%',
     },
-    highlightedRow: {
-        backgroundColor: '#f0f0f0',
+    pagination: {
+        marginTop: theme.spacing(2),
+        display: 'flex',
+        justifyContent: 'center',
     },
-});
+}));
 
 export default function UserList() {
     const { data: users, isLoading, isError, error, refetch } = useGetUsersQuery();
@@ -80,6 +75,7 @@ export default function UserList() {
     const handlePageChange = (event, newPage) => {
         setCurrentPage(newPage);
     };
+    
 
     const handleDeleteUser = async (id) => {
         // Mostrar el cuadro de diálogo de confirmación
@@ -119,13 +115,13 @@ export default function UserList() {
     };
 
     return (
-        <div className="flex flex-col items-center " style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
             <TextField
                 label="Search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 variant="outlined"
-                style={{ marginBottom: '1rem', width: '300px' }}
+                style={{ marginBottom: '1rem', width: '300px', textAlign: 'center' }}
             />
             {totalUsers === 0 && (
                 <Typography variant="h6" gutterBottom>
@@ -156,10 +152,10 @@ export default function UserList() {
                                         <Avatar alt="Avatar" src={user.avatar} className={classes.avatar} />
                                     </TableCell>
                                     <TableCell className={classes.cell}>
-                                        <IconButton component={Link} to={`/user/${user._id}`} className="mr-2 bg-gray-900 text-white rounded hover:bg-gray-700">
+                                        <IconButton component={Link} to={`/user/${user._id}`} className={classes.button}>
                                             <EditIcon />
                                         </IconButton>
-                                        <IconButton color="secondary" onClick={() => handleDeleteUser(user._id)}>
+                                        <IconButton color="secondary" onClick={() => handleDeleteUser(user._id)} className={classes.button}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
@@ -169,16 +165,20 @@ export default function UserList() {
                     </Table>
                 </TableContainer>
             )}
-            {totalUsers > 0 && (
-                <TablePagination
-                    rowsPerPageOptions={[itemsPerPage]}
-                    component="div"
-                    count={totalUsers}
-                    rowsPerPage={itemsPerPage}
-                    page={currentPage}
-                    onPageChange={handlePageChange}
-                />
+            {totalUsers > itemsPerPage && (
+                <div className={classes.pagination}>
+                    <TablePagination
+                        rowsPerPageOptions={[itemsPerPage]}
+                        component="div"
+                        count={totalUsers}
+                        rowsPerPage={itemsPerPage}
+                        page={currentPage}
+                        onPageChange={handlePageChange}
+                        labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+                    />
+                </div>
             )}
+
         </div>
     );
 }
