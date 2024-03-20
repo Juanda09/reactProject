@@ -1,10 +1,10 @@
+import { Container, Typography } from '@material-ui/core';
 
-export default function Footer(){
-
+export default function Footer() {
     return (
-        <div className="bg-gray-800 text-white py-4 text-center  bottom-0 w-full">
-            <h1>Proyecto talento Tech</h1>
-            <h2 className="text-red-500">Desarrollador por Juanito</h2>
-        </div>
+        <Container maxWidth="xl" className="bg-gray-800 text-white py-4 text-center w-full">
+            <Typography variant="h6" className="text-red-500">Proyecto Talento Tech</Typography>
+            <Typography variant="subtitle1">Desarrollado por Juan David Huertas Zapata</Typography>
+        </Container>
     );
 }

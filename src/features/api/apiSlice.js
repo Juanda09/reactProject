@@ -15,8 +15,21 @@ export const apiSlice = createApi({
                 method: 'POST',
                 body: newUser
             })
-        })
-    })    
+        }),
+        updateUser: builder.mutation({
+            query: ({ id, updatedUser }) => ({
+                url: `/user/${id}`,
+                method: 'PATCH',
+                body: updatedUser
+            })
+        }),
+        deleteUser: builder.mutation({
+            query: ({ id }) => ({
+                url: `/user/${id}`,
+                method: 'DELETE',
+            })
+        }),
+    }),    
 });
 
-export const { useGetUsersQuery, useCreateUserMutation } = apiSlice;
+export const { useGetUsersQuery, useCreateUserMutation, useUpdateUserMutation, useDeleteUserMutation } = apiSlice;

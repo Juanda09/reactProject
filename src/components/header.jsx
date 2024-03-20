@@ -1,17 +1,31 @@
-import { Link } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
+import { NavLink } from 'react-router-dom';
 
-export default function Header(){
-
+export default function Header() {
     return (
-        <nav className="bg-gray-800 text-white py-4 flex justify-between items-center">
-            <ul className="flex px-8 space-x-5">
-                <li><Link to='/' className="hover:text-blue-500">Inicio</Link></li>
-                <li><Link to='/user' className="hover:text-blue-500">Usuarios</Link></li>
-                <li><Link to='/create-user' className="hover:text-blue-500">Crear Usuario</Link></li>
-            </ul>
-            <div className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 px-5" >
-                <Link to='/login' className="hover:text-blue-500">Login</Link>
-            </div>
-        </nav>
-        );
+        <AppBar position="static">
+            <Toolbar className="bg-gray-800">
+                <Typography variant="h6" component="div" className="flex-grow">
+                <Button component={NavLink} to="/" color="inherit" className="hover:text-blue-500">
+                    Inicio
+                </Button>
+                </Typography>
+                <ul className="flex px-8 space-x-5">
+                    <li>
+                        <Button component={NavLink} to="/user" color="inherit" className="hover:text-blue-500">
+                            Usuarios
+                        </Button>
+                    </li>
+                    <li>
+                        <Button component={NavLink} to="/create-user" color="inherit" className="hover:text-blue-500">
+                            Crear Usuario
+                        </Button>
+                    </li>
+                </ul>
+                <Button component={NavLink} to="/login" color="inherit" className="hover:text-blue-500">
+                    Login
+                </Button>
+            </Toolbar>
+        </AppBar>
+    );
 }
