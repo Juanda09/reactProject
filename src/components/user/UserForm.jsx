@@ -1,207 +1,51 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useGetUsersQuery, useCreateUserMutation, useUpdateUserMutation } from '../../features/api/apiSlice';
-import { TextField, Button, Typography, CircularProgress, IconButton, InputAdornment } from '@material-ui/core';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
-import Swal from 'sweetalert2';
-
-export default function UserForm() {
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const { data: userData, refetch } = useGetUsersQuery();
-    const [createUser, { isLoading: isCreating, isError: createError }] = useCreateUserMutation();
-    const [updateUser, { isLoading: isUpdating, isError: updateError }] = useUpdateUserMutation();
-    const [formData, setFormData] = useState({
-        name: '',
-        last_name: '',
-        age: '',
-        email: '',
-        password: '',
-    });
-    const [errors, setErrors] = useState({});
-    const [isValidForm, setIsValidForm] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-
-    useEffect(() => {
-        if (id && userData) {
-            const user = userData.find(user => user._id === id);
-            if (user) {
-                setFormData({
-                    name: user.name,
-                    last_name: user.last_name,
-                    age: user.age,
-                    email: user.email,
-                });
-            }
-        }
-    }, [id, userData]);
-
-    const handleTogglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const userToUpdate = { ...formData };
-        try {
-            if (id) {
-                await updateUser({ id, updatedUser: userToUpdate }).unwrap();
-            } else {
-                await createUser(formData).unwrap();
-            }
-            refetch();
-            navigate('/user');
-            // Mostrar notificación de éxito
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'User saved successfully!',
-            });
-        } catch (error) {
-            console.error('Error saving user:', error);
-            // Mostrar notificación de error
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while saving the user. Please try again later.',
-            });
-        }
-    };
-
-    const validateForm = () => {
-        let valid = true;
-        const newErrors = {};
-    
-        // Validar campos requeridos
-        Object.keys(formData).forEach((key) => {
-            if ((!id && key !== 'password') || (!formData[key] && (key !== 'password' || !id))) {
-                newErrors[key] = 'This field is required';
-                valid = false;
-            }
-        });
-    
-        // Actualizar el estado de errores
-        setErrors(newErrors);
-    
-        // Actualizar el estado de validez del formulario
-        setIsValidForm(valid);
-    };
-    
-    
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-        // Validar el formulario después de cada cambio
-        validateForm();
-    };
-
-    console.log('isValidForm:', isValidForm);
-
-
+/** Componente reutilizable para Crear y Actualizar un Usuario */
+export default function UserForm({props}){
+    const { handleSubmit, handleChangeAvatar, user } = props
 
     return (
         <div className="max-w-md w-full mx-auto px-5 py-5">
             <form onSubmit={handleSubmit} className="shadow-md rounded pt-6 pb-10 mb-4 px-10">
-                <Typography variant="h5" gutterBottom>
-                    {id ? 'Edit User' : 'Create User'}
-                </Typography>
-                <TextField
-                    label="Name"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    error={!!errors.name}
-                    helperText={errors.name}
-                    fullWidth
-                    margin="normal"
-                />
-                <TextField
-                    label="Last Name"
-                    id="last_name"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleChange}
-                    required
-                    error={!!errors.last_name}
-                    helperText={errors.last_name}
-                    fullWidth
-                    margin="normal"
-                />
-                <TextField
-                    label="Age"
-                    id="age"
-                    name="age"
-                    value={formData.age}
-                    onChange={handleChange}
-                    required
-                    error={!!errors.age}
-                    helperText={errors.age}
-                    fullWidth
-                    margin="normal"
-                    type="number"
-                />
-                <TextField
-                    label="Email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    error={!!errors.email}
-                    helperText={errors.email}
-                    fullWidth
-                    margin="normal"
-                    type="email"
-                />
-                {!id && (
-                    <TextField
-                        label="Password"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required={!id && !formData.password}
-                        error={!!errors.password}
-                        helperText={errors.password}
-                        fullWidth
-                        margin="normal"
-                        type={showPassword ? "text" : "password"}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleTogglePasswordVisibility}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                )}
-
-
-
-                <div className="flex justify-center">
-                <Button
-    type="submit"
-    disabled={isCreating || isUpdating}
-    variant="contained"
-    color="primary"
-    disableElevation
->
-    {isCreating || isUpdating ? <CircularProgress size={24} /> : 'Save'}
-</Button>
-
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Name</label>
+                    <input type="text" required name="name" placeholder="Name" defaultValue={user?.name}
+                            className="shadow appearance-none border rounded w-full focus:shadow-outline" />
                 </div>
-                {(createError || updateError) && (
-                    <Typography variant="body2" color="error" align="center" gutterBottom>
-                        Error saving user. Please try again later.
-                    </Typography>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Lastname</label>
+                    <input type="text" required name="lastname" placeholder="Lastname" defaultValue={user?.lastname}
+                        className="shadow appearance-none border rounded w-full focus:shadow-outline" />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Email</label>
+                    <input type="email" required name="email" placeholder="Email" defaultValue={user?.email}
+                    className="shadow appearance-none border rounded w-full focus:shadow-outline" />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Identification</label>
+                    <input type="number" required name="id" placeholder="Identification" defaultValue={user?.id}
+                        className="shadow appearance-none border rounded w-full focus:shadow-outline" />
+                </div>
+                {user ? null :
+                (<div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2">Password</label>
+                    <input type="password" required name="password" placeholder="Password" className="shadow appearance-none border rounded w-full focus:shadow-outline" />
+                </div>
                 )}
+                <div className="flex items-center justify-center w-full">
+                    <label htmlFor="avatar" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            </svg>
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                        </div>
+                        <input onChange={handleChangeAvatar} id="avatar" name="avatar" accept="image/png, image/jpeg" type="file" className="hidden"/>
+                    </label>
+                </div> 
+                <div className="flex justify-center">
+                    <button className="bg-blue-500 hover:bg-blue-700 rounded text-blue-50 font-bold py-2 px-4">Save</button>
+                </div>
             </form>
         </div>
     );
