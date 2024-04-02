@@ -61,18 +61,30 @@ export default function HousesList() {
             <div className="sm:-mx-6 lg:-mx-8">
                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                        <div className="flex justify-between items-center mb-4 px-4">
+                    <div className="flex justify-between items-center px-4 py-3 sm:px-6">
                             <div>
-                                <label className="mr-2">Filter by Type:</label>
-                                <select value={houseTypeFilter} onChange={handleFilterChange} className="border border-gray-300 rounded-md px-2 py-1">
+                                <label htmlFor="houseTypeFilter" className="block text-sm font-medium text-gray-700">Filter by Type:</label>
+                                <select
+                                    id="houseTypeFilter"
+                                    name="houseTypeFilter"
+                                    onChange={handleFilterChange}
+                                    value={houseTypeFilter}
+                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                >
                                     <option value="">All</option>
                                     <option value="house">House</option>
                                     <option value="apartment">Apartment</option>
                                 </select>
                             </div>
                             <div>
-                                <label className="mr-2">Houses Per Page:</label>
-                                <select value={housesPerPage} onChange={handlePerPageChange} className="border border-gray-300 rounded-md px-2 py-1">
+                                <label htmlFor="housesPerPage" className="block text-sm font-medium text-gray-700">Houses Per Page:</label>
+                                <select
+                                    id="housesPerPage"
+                                    name="housesPerPage"
+                                    onChange={handlePerPageChange}
+                                    value={housesPerPage}
+                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                >
                                     <option value={5}>5</option>
                                     <option value={10}>10</option>
                                     <option value={15}>15</option>
@@ -151,11 +163,11 @@ export default function HousesList() {
                 </div>
             </div>
             <ReactPaginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
+                previousLabel={"Anterior"}
+                nextLabel={"Siguiente"}
                 pageCount={pageCount}
                 onPageChange={changePage}
-                containerClassName={"pagination"}
+                containerClassName={"pagination justify-center mt-4"}
                 previousLinkClassName={"pagination__link"}
                 nextLinkClassName={"pagination__link"}
                 disabledClassName={"pagination__link--disabled"}
