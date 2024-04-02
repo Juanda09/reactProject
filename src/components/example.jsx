@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { decreaseNumber, increaseNumber } from "../features/numberSlice";
 import { useSelector, useDispatch } from 'react-redux';
 

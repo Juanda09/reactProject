@@ -1,28 +1,45 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDeleteUserMutation, useGetUsersQuery } from '../../features/api/apiSlice';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import ReactPaginate from 'react-paginate';
 
-export default function UserList(){
-
-    /** Obtiene el estado de una variable con Redux */
-    // const users = useSelector(state => state.users)
+export default function UserList() {
     const { data: users, isLoading, isError, error } = useGetUsersQuery();
     const [deleteUser] = useDeleteUserMutation();
+    const [pageNumber, setPageNumber] = useState(0);
+    const [usersPerPage, setUsersPerPage] = useState(5); // Inicialmente 5 usuarios por página
+
+    const pagesVisited = pageNumber * usersPerPage;
+
+    const displayUsers = users && users.slice(pagesVisited, pagesVisited + usersPerPage);
+
+    const pageCount = Math.ceil(users?.length / usersPerPage);
+
+    const changePage = ({ selected }) => {
+        setPageNumber(selected);
+    };
+
     const handleDelete = (user) => {
         Swal.fire({
-            title: `¿Estas seguro que deseas eliminar el Usuario ${user.name} ${user.lastname}?`,
+            title: `¿Estas seguro que deseas eliminar el Usuario ${user.name} ${user.last_name}?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Confirmar"
-          }).then((result) => {
+        }).then((result) => {
             if (result.isConfirmed) {
-                deleteUser(user._id)              
+                deleteUser(user._id)
             }
-          });
+        });
     }
-    
+
+    const handlePerPageChange = (e) => {
+        setUsersPerPage(parseInt(e.target.value));
+        setPageNumber(0); // Reiniciar a la primera página cuando cambia el número de usuarios por página
+    };
+
     if (isLoading) return <div role="status" className='flex justify-center'>
         <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -30,51 +47,82 @@ export default function UserList(){
         </svg>
         <span className="sr-only">Loading...</span>
     </div>;
-    else if(isError) return (<div>Error: {error.message} </div>)
+    else if (isError) return (<div>Error: {error.message} </div>)
 
     return (
-        <div className="flex justify-center py-8 px-10">
-        <table className="table-auto w-full">
-            <thead>
-                <tr className="bg-slate-500">
-                    <th className="px-4 py-2 text-white">Name</th>
-                    <th className="px-4 py-2 text-white">LastName</th>
-                    <th className="px-4 py-2 text-white">Email</th>
-                    <th className="px-4 py-2 text-white">Idetification</th>
-                    <th className="px-4 py-2 text-white">Avatar</th>
-                    <th className="px-4 py-2 text-white">Actions</th>
-                </tr>
-            </thead>
-            <tbody className="bg-gray-200 ">
-                {users.map(user => (
-                <tr key={user._id}>
-                    <td className="border-y-2 px-4 py-2 border-indigo-600">{user.name}</td>
-                    <td className="border-y-2 px-4 py-2 border-indigo-600">{user.lastname}</td>
-                    <td className="border-y-2 px-4 py-2 border-indigo-600">{user.email}</td>
-                    <td className="border-y-2 px-4 py-2 border-indigo-600">{user.id}</td>
-                    <td className="border-y-2 px-4 py-2 border-indigo-600">
-                        <img className="size-40 transition-transform duration-1000 transform hover:scale-110 max-w-none"
-                            src={`http://localhost:3000/${user.avatar}`}/></td>
-                    <td className="border-y-2 px-4 py-2 border-indigo-600">
-                    <div className="inline-flex rounded-md shadow-sm" role="group">
-                        <Link to={`/user/${user._id}`} 
-                                className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border
-                                             border-gray-900 rounded-s-lg hover:bg-gray-900 hover:text-white 
-                                             focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white
-                                             dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">Edit</Link>
-                        <button type="button" 
-                                onClick={() => {
-                                    handleDelete(user)
-                                }}
-                                className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-t border-b border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
-                            Delete
-                        </button>
-                    </div>
-                    </td>
-                </tr>
-                ))}
-            </tbody>
-        </table>
+        <div className="flex flex-col items-center py-8 px-10">
+            <div className="mb-4">
+                <label htmlFor="perPageSelector" className="block text-gray-700 font-bold mb-2">
+                    Usuarios por página:
+                </label>
+                <select
+                    id="perPageSelector"
+                    name="perPageSelector"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    onChange={handlePerPageChange}
+                    value={usersPerPage}
+                >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+            <table className="table-auto w-full">
+                <thead>
+                    <tr className="bg-slate-500">
+                        <th className="px-4 py-2 text-white">Name</th>
+                        <th className="px-4 py-2 text-white">Last Name</th>
+                        <th className="px-4 py-2 text-white">Email</th>
+                        <th className="px-4 py-2 text-white">Age</th>
+                        <th className="px-4 py-2 text-white">Avatar</th>
+                        <th className="px-4 py-2 text-white">Actions</th>
+                    </tr>
+                </thead>
+                <tbody className="bg-gray-200 ">
+                    {displayUsers.map(user => (
+                        <tr key={user._id}>
+                            <td className="border-y-2 px-4 py-2 border-indigo-600">{user.name}</td>
+                            <td className="border-y-2 px-4 py-2 border-indigo-600">{user.last_name}</td>
+                            <td className="border-y-2 px-4 py-2 border-indigo-600">{user.email}</td>
+                            <td className="border-y-2 px-4 py-2 border-indigo-600">{user.age}</td>
+                            <td className="border-y-2 px-4 py-2 border-indigo-600">
+                                <img className="size-40 transition-transform duration-1000 transform hover:scale-110 max-w-none"
+                                    src={`http://localhost:4000/${user.avatar}`} alt={`${user.name}'s Avatar`} />
+                            </td>
+                            <td className="border-y-2 px-4 py-2 border-indigo-600">
+                                <div className="inline-flex rounded-md shadow-sm" role="group">
+                                    <Link to={`/user/${user._id}`}
+                                        className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border
+                                            border-gray-900 rounded-s-lg hover:bg-gray-900 hover:text-white 
+                                            focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white
+                                            dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">Edit</Link>
+                                    <button type="button"
+                                        onClick={() => {
+                                            handleDelete(user)
+                                        }}
+                                        className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-t border-b border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <div className="pagination-container">
+                <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={pageCount}
+                    onPageChange={changePage}
+                    containerClassName={"pagination justify-center mt-4"}
+                    previousLinkClassName={"pagination__link"}
+                    nextLinkClassName={"pagination__link"}
+                    disabledClassName={"pagination__link--disabled"}
+                    activeClassName={"pagination__link--active"}
+                />
+            </div>
         </div>
     );
 }
