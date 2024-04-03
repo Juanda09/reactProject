@@ -15,6 +15,7 @@ import ChangePassword from "./components/Auth/ChangePassword";
 import HousesList from "./components/Houses/HousesList";
 import HouseCreateForm from "./components/Houses/HouseCreateForm";
 import HouseEditForm from "./components/Houses/HouseEditForm";
+import Chat from "./components/Chat/chat";
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
           <Route path="/houses" element={<PrivateRoute Component={HousesList} />} />
           <Route path="/create-house" element={<PrivateRoute Component={HouseCreateForm} />} />
           <Route path="/houses/:codigo" element={<PrivateRoute Component={HouseEditForm} />} />
+          <Route path="/chat" element={<PrivateRoute Component={Chat} />} />
           {/* Rutas Publicas */}
           <Route path="/create-user" element={<UserFormCreate />} />
           <Route path="/login" element={<Login />} />

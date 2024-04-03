@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useCreateHouseMutation, useUploadImageMutation } from '../../features/api/apiSlice';
+import { useCreateHouseMutation, useUploadImageMutation } from '../../features/api/apiHouseSlice';
 import Swal from 'sweetalert2';
 import HouseForm from './HouseForm';
 import { useState } from 'react';

@@ -34,7 +34,7 @@ export default function Header() {
   return (
     <nav className="bg-gray-800 text-white py-4 flex justify-between items-center">
       <ul className="flex px-8 space-x-5">
-        {!isAutheticated ? null : (
+        {isAutheticated ? (
           <>
             <li>
               <Link to="/" className="hover:text-blue-500">
@@ -83,7 +83,16 @@ export default function Header() {
                 </ul>
               )}
             </li>
+            <li>
+            <Link to="/chat" className="hover:text-blue-500">
+               Chat
+            </Link>
+            </li>
           </>
+        ):(
+          <Link to="/create-user" className="hover:text-blue-500">
+          Crear usuario
+        </Link>
         )}
       </ul>
       {/* DropDown Usuario Logueado */}

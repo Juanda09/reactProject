@@ -62,45 +62,7 @@ export const apiSlice = createApi({
                 body: body
             })
         }),
-        getHouses: builder.query({
-            query: () => '/house',
-            providesTags: ['Houses'],
-        }),
-        getHouseByCodigo: builder.query({
-            query: (codigo) => `/house/${codigo}`,
-            providesTags: ['Houses']
-        }),
-        updateHouseByCodigo: builder.mutation({
-            query: ({codigo, ...updates}) => ({
-                url: `/house/${codigo}`,
-                method: 'PATCH',
-                body: updates
-            }),
-            invalidatesTags: ['Houses']
-        }),
-        createHouse: builder.mutation({
-            query: (newHouse) => ({
-                url: '/house',
-                method: 'POST',
-                body: newHouse
-            }),
-            invalidatesTags: ['Houses']
-        }),
-        deleteHouseByCodigo: builder.mutation({
-            query: (codigo) => ({
-                url: `/house/${codigo}`,
-                method: 'DELETE'
-            }),
-            invalidatesTags: ['Houses']
-        }),
-        uploadImage: builder.mutation({
-            query: (body) => ({
-                url: `/upload/${body.codigo}/house`,
-                method: "POST",
-                body: body.file
-            }),
-            invalidatesTags: ["Houses"]
-        }),
+        
     })    
 });
 

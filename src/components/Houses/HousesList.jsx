@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGetHousesQuery, useDeleteHouseByCodigoMutation } from '../../features/api/apiSlice';
+import { useGetHousesQuery, useDeleteHouseByCodigoMutation } from '../../features/api/apiHouseSlice';
 import Swal from 'sweetalert2';
 import ReactPaginate from 'react-paginate';
 
